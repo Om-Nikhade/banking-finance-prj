@@ -1,10 +1,5 @@
 pipeline {
     agent any
-
-    environment {
-        IMAGE_TAG = "omnikhade/banking-finance-prj:1.0"  // Updated Docker image tag
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -19,4 +14,5 @@ pipeline {
                 sh 'mvn clean package'
             }
         }
-        
+    }
+}   
