@@ -1,18 +1,39 @@
 pipeline {
     agent any
+
     stages {
-        stage('Checkout') {
+        stage('Build') {
             steps {
-                // Clone code from the provided GitHub repository
-                git 'https://github.com/Om-Nikhade/banking-finance-prj.git'
+                git 'https://github.com/Om-Nikhade/banking-finance-prj.git'                
+                sh "mvn clean package"
             }        
         }
         
-        stage('Build') {
+        stage('Generate Test Reports') {
             steps {
-                // Run Maven to build the project (Maven should be available in the environment's PATH)
-                sh 'mvn clean package'
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '/var/lib/jenkins/workspace/banking-finance-prj/target/surefire-reports/', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+            }
+        }
+        
+        stage('Create Docker Image') {
+            steps {
+                sh 'docker build -t omnikhade/banking-finance-prj:1.0 .'
+            }
+        }
+
+        stage('Docker Login') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerlogin', passwordVariable: 'dockerpassword', usernameVariable: 'dockerlogin')])
+                    sh 'docker login -u ${dockerlogin} -p ${dockerpassword}'
+                }
+            }
+        
+
+        stage('Push Image') {
+            steps {
+                sh 'docker push omnikhade/banking-finance-prj:1.0'
             }
         }
     }
-}   
+}
+
