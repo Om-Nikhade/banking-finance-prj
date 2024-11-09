@@ -174,5 +174,26 @@
     <!-- javascript --> 
     <script src="js/owl.carousel.js"></script>
     <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script> 
+    <script>
+      document.getElementById('expenseForm').addEventListener('submit', function(event) {
+  event.preventDefault();
+  
+  const amount = document.getElementById('amount').value;
+  const description = document.getElementById('description').value;
+  const category = document.getElementById('category').value;
+  const date = document.getElementById('date').value;
+  
+  const expenseList = document.getElementById('expenseList');
+  const newRow = expenseList.insertRow();
+
+  newRow.insertCell(0).textContent = date;
+  newRow.insertCell(1).textContent = `$${amount}`;
+  newRow.insertCell(2).textContent = description;
+  newRow.insertCell(3).textContent = category;
+
+  document.getElementById('expenseForm').reset();
+});
+
+    </script>
 </body>
 </html>
